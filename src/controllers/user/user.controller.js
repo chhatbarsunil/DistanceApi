@@ -8,7 +8,7 @@ export default class UserController {
    */
   async getUsers(req, res, next) {
     try {
-      const users = await User.find({});
+      const users = await User.find({}).sort({"userId":1});
       if (users.length == 0) {
         res.send("No users found");
       }
@@ -26,7 +26,6 @@ export default class UserController {
    */
   async addUser(req, res, next) {
     try {
-      console.log("Body:", req.body)
       const { userName, email, phone, city } = req.body;
       let maxDistance = req.body.maxDistance;
       let minDistance=req.body.minDistance;
@@ -49,9 +48,7 @@ export default class UserController {
    */
   async updateDistanceByUserId(req, res, next) {
     try {
-      console.log("Body:", req.body)
       const { userId, minDistance, maxDistance } = req.body;
-
       const user = await User.find({ userId: userId })
       if (user.length === 0) {
         res.send("Id " + userId + " is not found in database")
@@ -61,7 +58,6 @@ export default class UserController {
         res.send({ user: updatedUser }); // Return the user ID
       }
     } catch (error) {
-      // res.status(500).json({ error: error.message });
       res.json({ error: error.message });
     }
   }
@@ -70,7 +66,6 @@ export default class UserController {
    */
   async getUserById(req, res, next) {
     let query = req.query
-    console.log("Query params:", query)
     try {
       const user = await User.find({ userId: query.userId })
       if (user.length === 0) {
@@ -88,17 +83,17 @@ export default class UserController {
   * Update User by Id 
   */
   async updateUserById(req, res, next) {
-    let query = req.query
-    //required validation ro userId
-    console.log("Query params:", query)
+    
+    const userModel = req.body
     try {
-      const id = await User.findOne({ userId: query.userId });
-      if (id === null) {
+        const user = await User.findOne({ userId: userModel.userId });
+      if (user.userId === null) {
         res.send("Id not found in database");
       }
       else {
-        const user = await User.updateOne({ userId: query.userId }, { $set: { maxDistance: query.maxDistance, minDistance: query.minDistance } })
-        res.send(user);
+            await User.updateOne({ userId: userModel.userId }, { $set:userModel 
+        })
+        res.send(userModel);
       }
     } catch (error) {
       res.send(error.message)
@@ -110,7 +105,6 @@ export default class UserController {
   */
   async deleteUserById(req, res, next) {
     let query = req.query
-    console.log("Query params:", query)
 
     try {
       const id = await User.findOne({ userId: query.userId });
@@ -137,7 +131,6 @@ export default class UserController {
       }
       else {
         const user = await User.findOne({ userId: query.userId },{minDistance:1,maxDistance:1,_id:0})
-        console.log("user:",user)
         res.send(user);
       }
     } catch (error) {

@@ -16,6 +16,9 @@ const userSchema = new mongoose.Schema({
   city:{
     type:String
   },
+  zip:{
+    type:String
+  },
   maxDistance: {
     type: Number
   },

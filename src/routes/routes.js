@@ -12,7 +12,6 @@ router.post("/adduser",userController.addUser);
 router.get("/getuserbyid",userController.getUserById)
 router.put('/updateuserbyid',userController.updateUserById)
 router.delete('/deleteuserbyid',userController.deleteUserById)
-
 router.put("/updatedistance",userController.updateDistanceByUserId);
 router.get("/getdistancebyuserid",userController.getDistanceByUserId);
 
